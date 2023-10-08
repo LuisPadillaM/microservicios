@@ -1,0 +1,9 @@
+version: "3.7"
+
+services:
+  micro-docker:
+    image: micro-docker:1.1
+    ports:
+      - "8080:8080"
+    environment:
+      - TRM=5200
