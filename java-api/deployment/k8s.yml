@@ -1,0 +1,72 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: micro-java
+  name: micro-java
+  namespace: curso
+spec:
+  replicas: 1 #si fuera stateful solo puedo tener 1 replica
+  selector:
+    matchLabels:
+      app: micro-java
+  template:
+    metadata:
+      labels:
+        app: micro-java
+    spec:
+      containers:
+      - image: ldpm/micro-java:1.0
+        name: micro1
+        envFrom:
+          - configMapRef:
+              name: cfg-micro-java
+#        env:
+#          - name: TRM
+#            value: "5000"
+        ports:
+        - containerPort: 9090
+          protocol: TCP
+        resources:
+            requests:
+              memory: "200Mi" # valor en reposo del microservicio https://www.quora.com/What-is-Millicores
+              cpu: "200m"
+            limits:
+                memory: "256Mi"
+                cpu: "300m"
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: micro-java
+  name: micro-java
+  namespace: curso
+spec:
+  selector:
+    app: micro-java
+  ports:
+  - protocol: TCP
+    port: 8888
+    targetPort: 9090
+---
+apiVersion: autoscaling/v2
+kind: HorizontalPodAutoscaler
+metadata:
+  name: hpa-micro-java
+  namespace: curso
+spec:
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: micro-java
+  minReplicas: 1
+  maxReplicas: 5
+  metrics:
+    - type: Resource
+      resource:
+        name: cpu
+        target:
+          type: Utilization
+          averageUtilization: 50

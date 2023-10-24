@@ -1,0 +1,16 @@
+apiVersion: v1
+kind: Ingress
+metadata:
+  labels:
+    app: micro-java
+  name: micro-java
+  namespace: curso
+spec:
+  rules:
+    - http:
+        paths:
+          - pathType: Prefix
+            path: "/"
+            backend:
+              serviceName: micro-java
+              servicePort: 8888

@@ -1,0 +1,27 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: java-micro-service
+  name: java-micro-service
+  namespace: default
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: java-micro-service
+  template:
+    metadata:
+      labels:
+        app: java-micro-service
+    spec:
+      containers:
+        - image: luispm/micro-java:1.0
+          name: microservice
+          env:
+            - name: TRM
+              value: "5000"
+          ports:
+            - containerPort: 9090
+              protocol: TCP

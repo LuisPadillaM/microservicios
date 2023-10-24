@@ -1,0 +1,9 @@
+version: "3.7"
+
+services:
+  micro-docker:
+    image: micro-docker:1.1
+    ports:
+      - "9090:8888"
+    environment:
+      - PORT=8888
